@@ -2,32 +2,47 @@ syntax = "proto3";
 
 package api.user.interface.v1;
 
+import "google/api/annotations.proto";
+
 option go_package = "Janna-IM/api/user/interface/v1;v1";
-option java_multiple_files = true;
-option java_package = "api.user.interface.v1";
 
 service User {
-	rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
-	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
-	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
-	rpc GetUser (GetUserRequest) returns (GetUserReply);
-	rpc ListUser (ListUserRequest) returns (ListUserReply);
+	rpc UserRegister (RegisterRequest) returns (UserReply) {
+		option (google.api.http) = {
+			post: "/auth/user_register",
+			body: "*",
+		};
+	}
+}
+
+message UserTokenInfo {
+	string user_id = 1;
+	string token = 2;
+	int64 expired_time = 3;
+}
+
+message UserReply {
+	UserTokenInfo user_token_info = 1;
 }
 
 message UserInfo {
-	string UserID = 1;
-	string NickName = 2;
-	string PhoneNumber = 3;
-	string Email = 4;
-	string CreateIp = 5;
-	string LastLoginIp = 6;
-	int32 Gender = 7;
-	string CreateTime = 8;
-	uint32 Birth = 9;
+	string user_id = 1;
+	string nick_name = 2;
+	string phone_number = 3;
+	string email = 4;
+	string create_ip = 5;
+	string last_login_ip = 6;
+	int32 gender = 7;
+	string create_time = 8;
+	uint32 birth = 9;
 }
 
-message UserRegister {
-	string Secret = 1;
-	string OperationID = 2;
-	int32 Platform = 3;
+message RegisterRequest {
+	message UserRegister {
+		string secret = 1;
+		string operation_id = 2;
+		int32 platform = 3;
+	}
+	UserRegister user_register = 1;
+	UserInfo user_info = 2;
 }

@@ -1,51 +1,19 @@
-# Kratos Project Template
+<p align="center"><a href="https://go-kratos.dev/" target="_blank"><img src="https://img-blog.csdnimg.cn/dfa5dd5b7c4f459786e461953a5eb3d3.png#pic_center?raw=true"></a></p>
 
-## Install Kratos
-```
-go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
-```
-## Create a service
-```
-# Create a template project
-kratos new server
+<p align="center">
+  <a href="https://github.com/guowei-gong/yuumi-movie" target="_blank"><img alt="yuumi" src="https://img.shields.io/badge/build-passing-green?style=flat&logo=github" /></a>
+  <a href="https://go-kratos.dev/" target="_blank"><img alt="Kratos" src="https://img.shields.io/badge/kratos-2.0-00A2D8?style=flat&logo=bilibili" /></a>
+  <a href="http://opentracing.io"  target="_blank"><img alt="OpenTracing Badge" src="https://img.shields.io/badge/OpenTracing-enabled-blue.svg" /></a>
+</p>
 
-cd server
-# Add a proto template
-kratos proto add api/server/server.proto
-# Generate the proto code
-kratos proto client api/server/server.proto
-# Generate the source code of service by proto file
-kratos proto server api/server/server.proto -t internal/service
 
-go generate ./...
-go build -o ./bin/ ./...
-./bin/server -conf ./configs
-```
-## Generate other auxiliary files by Makefile
-```
-# Download and update dependencies
-make init
-# Generate API files (include: pb.go, http, grpc, validate, swagger) by proto file
-make api
-# Generate all files
-make all
-```
-## Automated Initialization (wire)
-```
-# install wire
-go get github.com/google/wire/cmd/wire
+# [WIP]Janna-IM
+🌪 Janna(迦娜) 是一个开源的即时通讯项目，服务端基于 Go 微服务框架 Kratos 实现。
 
-# generate wire
-cd cmd/server
-wire
-```
+> 名称起源：Janna 是英雄联盟中，战士英雄最喜欢的辅助英雄。
 
-## Docker
-```bash
-# build
-docker build -t <your-docker-image-name> .
+## Goals
+我们希望提供一个 Kratos 完整的示例项目。让每一个 Go 微服务初学者，对于微服务的开发都有一个完整的体验。
 
-# run
-docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
-```
-
+## Copyright
+项目中的资源均网络搜集，仅供交流学习使用，严禁商业用途。
