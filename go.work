@@ -1,0 +1,5 @@
+go 1.18
+
+// replace github.com/go-kratos/kratos/v2 v2.4.1 => /Users/gongguowei/go/src/github.com/kratos
+
+use ./.

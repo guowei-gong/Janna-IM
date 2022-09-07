@@ -1,7 +1,9 @@
-<p align="center"><a href="https://go-kratos.dev/" target="_blank"><img src="https://img-blog.csdnimg.cn/dfa5dd5b7c4f459786e461953a5eb3d3.png#pic_center?raw=true"></a></p>
+<p align="center">
+<img src="https://img-blog.csdnimg.cn/dfa5dd5b7c4f459786e461953a5eb3d3.png" width = "100" height = "100" alt="图片名称" align=center />
+</p>
 
 <p align="center">
-  <a href="https://github.com/guowei-gong/yuumi-movie" target="_blank"><img alt="yuumi" src="https://img.shields.io/badge/build-passing-green?style=flat&logo=github" /></a>
+  <a href="https://github.com/guowei-gong/Janna-IM" target="_blank"><img alt="janna" src="https://img.shields.io/badge/build-passing-green?style=flat&logo=github" /></a>
   <a href="https://go-kratos.dev/" target="_blank"><img alt="Kratos" src="https://img.shields.io/badge/kratos-2.0-00A2D8?style=flat&logo=bilibili" /></a>
   <a href="http://opentracing.io"  target="_blank"><img alt="OpenTracing Badge" src="https://img.shields.io/badge/OpenTracing-enabled-blue.svg" /></a>
 </p>
