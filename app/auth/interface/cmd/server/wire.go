@@ -6,11 +6,9 @@
 package main
 
 import (
-	"Janna-IM/app/user/service/internal/biz"
-	"Janna-IM/app/user/service/internal/conf"
-	"Janna-IM/app/user/service/internal/data"
-	"Janna-IM/app/user/service/internal/server"
-	"Janna-IM/app/user/service/internal/service"
+	"Janna-IM/app/auth/interface/internal/conf"
+	"Janna-IM/app/auth/interface/internal/server"
+	"Janna-IM/app/auth/interface/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
@@ -18,5 +16,5 @@ import (
 
 // wireApp init kratos application.
 func wireApp(*conf.Server, *conf.Data, log.Logger) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(server.ProviderSet, service.ProviderSet, newApp))
 }

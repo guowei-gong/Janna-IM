@@ -7,11 +7,9 @@
 package main
 
 import (
-	"Janna-IM/app/user/service/internal/biz"
-	"Janna-IM/app/user/service/internal/conf"
-	"Janna-IM/app/user/service/internal/data"
-	"Janna-IM/app/user/service/internal/server"
-	"Janna-IM/app/user/service/internal/service"
+	"Janna-IM/app/auth/interface/internal/conf"
+	"Janna-IM/app/auth/interface/internal/server"
+	"Janna-IM/app/auth/interface/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -19,18 +17,11 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
-	if err != nil {
-		return nil, nil, err
-	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
+func wireApp(confServer *conf.Server, data *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+	authService := service.NewAuthService()
+	grpcServer := server.NewGRPCServer(confServer, authService, logger)
+	httpServer := server.NewHTTPServer(confServer, authService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
-		cleanup()
 	}, nil
 }

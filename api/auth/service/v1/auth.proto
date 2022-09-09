@@ -1,7 +1,9 @@
 syntax = "proto3";
-package api.auth.service.v1;
-import "api/ws/v1/ws.proto";
-option go_package = "api/auth/service/v1;v1";
+
+package pbAuth;
+option go_package = "auth/service/v1;pbAuth";
+
+import "ws/v1/ws.proto";
 
 service Auth {
   rpc UserRegister(UserRegisterReq) returns(UserRegisterResp);
@@ -15,7 +17,7 @@ message CommonResp{
 }
 
 message UserRegisterReq {
-  api.ws.v1.UserInfo userInfo = 1;
+  server_api_params.UserInfo userInfo = 1;
   string operationID = 2;
 }
 

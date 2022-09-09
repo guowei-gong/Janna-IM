@@ -4,9 +4,9 @@ package api.auth.interface.v1;
 
 import "google/api/annotations.proto";
 
-option go_package = "api/user/interface/v1;v1";
+option go_package = "auth/interface/v1;v1";
 
-service User {
+service Auth {
   rpc UserRegister (RegisterRequest) returns (UserReply) {
     option (google.api.http) = {
       post: "/auth/user_register",

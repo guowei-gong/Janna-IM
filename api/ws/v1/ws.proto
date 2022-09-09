@@ -1,6 +1,6 @@
 syntax = "proto3";
-package api.ws.v1;
-option go_package = "api/ws/v1;v1";
+package server_api_params;
+option go_package = "Janna-IM/api/ws/v1;server_api_params";
 
 message UserInfo{
   string userID = 1;

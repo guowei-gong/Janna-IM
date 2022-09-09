@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Janna-IM/app/user/service/internal/conf"
+	"Janna-IM/app/auth/interface/internal/conf"
 	"flag"
 	"os"
 
@@ -27,7 +27,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "./app/user/service/configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "./app/auth/interface/configs", "config path, eg: -conf config.yaml")
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
