@@ -1,6 +1,9 @@
 package biz
 
 import (
+	pbAuth "Janna-IM/api/auth/service/v1"
+	ws "Janna-IM/api/ws/v1"
+	"Janna-IM/app/auth/interface/internal/conf"
 	"context"
 )
 
@@ -31,20 +34,28 @@ type UserRegister struct {
 }
 
 type AuthRepo interface {
+	RegisterUser(ctx context.Context)
 }
 
 type AuthUseCase struct {
+	bootstrap *conf.Bootstrap
 }
 
 func NewAuthUseCase() *AuthUseCase {
 	return &AuthUseCase{}
 }
 
-func (s *AuthUseCase) Register(ctx context.Context, params UserRegister) {
+func (s *AuthUseCase) Register(ctx context.Context, params *UserRegister) {
 	// TODO 前置校验
-	if params.Secret != "" {
+	if params.Secret != s.bootstrap.Secret {
 
 	}
 
+	// TODO 请求参数
+	req := &pbAuth.UserRegisterReq{
+		UserInfo: &ws.UserInfo{},
+	}
+
+	req.OperationID = params.OperationID
 	// TODO 远程调用
 }

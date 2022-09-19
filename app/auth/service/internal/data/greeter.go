@@ -1,7 +1,7 @@
 package data
 
 import (
-	"Janna-IM/app/user/service/internal/biz"
+	"Janna-IM/app/auth/service/internal/biz"
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"

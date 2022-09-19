@@ -1,8 +1,9 @@
 package main
 
 import (
-	"Janna-IM/app/user/service/internal/conf"
+	"Janna-IM/app/auth/service/internal/conf"
 	"flag"
+	"github.com/go-kratos/kratos/v2/registry"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -11,7 +12,6 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -27,10 +27,10 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "./app/user/service/configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "./app/auth/service/configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, rr registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -39,8 +39,8 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 		kratos.Logger(logger),
 		kratos.Server(
 			gs,
-			hs,
 		),
+		kratos.Registrar(rr),
 	)
 }
 
@@ -71,7 +71,11 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	var rc conf.Registry
+	if err := c.Scan(&rc); err != nil {
+		panic(err)
+	}
+	app, cleanup, err := wireApp(bc.Server, bc.Data, logger, &rc)
 	if err != nil {
 		panic(err)
 	}
