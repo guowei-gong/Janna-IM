@@ -2,9 +2,10 @@ package biz
 
 import (
 	pbAuth "Janna-IM/api/auth/service/v1"
-	ws "Janna-IM/api/ws/v1"
 	"Janna-IM/app/auth/interface/internal/conf"
+	ws "Janna-IM/third_party/ws/v1"
 	"context"
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
 type ApiUserInfo struct {
@@ -34,28 +35,44 @@ type UserRegister struct {
 }
 
 type AuthRepo interface {
-	RegisterUser(ctx context.Context)
+	RegisterUser(ctx context.Context, u *pbAuth.UserRegisterReq) error
 }
 
 type AuthUseCase struct {
-	bootstrap *conf.Bootstrap
+	Auth *conf.Auth
+	repo AuthRepo
 }
 
-func NewAuthUseCase() *AuthUseCase {
-	return &AuthUseCase{}
+func NewAuthUseCase(auth *conf.Auth) *AuthUseCase {
+	return &AuthUseCase{Auth: auth}
 }
 
-func (s *AuthUseCase) Register(ctx context.Context, params *UserRegister) {
+func (s *AuthUseCase) Register(ctx context.Context, params *UserRegister) error {
 	// TODO 前置校验
-	if params.Secret != s.bootstrap.Secret {
-
+	if params.Secret != s.Auth.Secret {
+		return errors.Unauthorized("auth", "secret error")
 	}
 
 	// TODO 请求参数
 	req := &pbAuth.UserRegisterReq{
-		UserInfo: &ws.UserInfo{},
+		UserInfo: &ws.UserInfo{
+			UserID:        params.UserID,
+			Nickname:      params.Nickname,
+			Gender:        params.Gender,
+			PhoneNumber:   params.PhoneNumber,
+			Birth:         params.Birth,
+			Email:         params.Email,
+			CreateIp:      params.CreateIp,
+			CreateTime:    uint32(params.CreateTime),
+			LastLoginIp:   params.LastLoginIp,
+			LastLoginTime: uint32(params.LastLoginTime),
+			LoginTimes:    params.LoginTimes,
+		},
+		OperationID: params.OperationID,
 	}
 
-	req.OperationID = params.OperationID
 	// TODO 远程调用
+	s.repo.RegisterUser(ctx, req)
+
+	return nil
 }

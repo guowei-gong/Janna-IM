@@ -7,7 +7,9 @@
 package main
 
 import (
+	"Janna-IM/app/auth/interface/internal/biz"
 	"Janna-IM/app/auth/interface/internal/conf"
+	"Janna-IM/app/auth/interface/internal/data"
 	"Janna-IM/app/auth/interface/internal/server"
 	"Janna-IM/app/auth/interface/internal/service"
 	"github.com/go-kratos/kratos/v2"
@@ -17,11 +19,13 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, data *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	authService := service.NewAuthService()
+func wireApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, auth *conf.Auth, logger log.Logger) (*kratos.App, func(), error) {
+	authUseCase := biz.NewAuthUseCase(auth)
+	authService := service.NewAuthService(authUseCase, logger)
 	grpcServer := server.NewGRPCServer(confServer, authService, logger)
 	httpServer := server.NewHTTPServer(confServer, authService, logger)
-	app := newApp(logger, grpcServer, httpServer)
+	registrar := data.NewRegistrar(registry)
+	app := newApp(logger, grpcServer, httpServer, registrar)
 	return app, func() {
 	}, nil
 }

@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.5
-// source: auth/service/v1/auth.proto
+// source: v1/auth_service.proto
 
-package pbAuth
+package v1
 
 import (
 	context "context"
@@ -37,7 +37,7 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 
 func (c *authClient) UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error) {
 	out := new(UserRegisterResp)
-	err := c.cc.Invoke(ctx, "/pbAuth.Auth/UserRegister", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.auth.service.v1.Auth/UserRegister", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *authClient) UserRegister(ctx context.Context, in *UserRegisterReq, opts
 
 func (c *authClient) UserToken(ctx context.Context, in *UserTokenReq, opts ...grpc.CallOption) (*UserTokenResp, error) {
 	out := new(UserTokenResp)
-	err := c.cc.Invoke(ctx, "/pbAuth.Auth/UserToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.auth.service.v1.Auth/UserToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *authClient) UserToken(ctx context.Context, in *UserTokenReq, opts ...gr
 
 func (c *authClient) ForceLogout(ctx context.Context, in *ForceLogoutReq, opts ...grpc.CallOption) (*ForceLogoutResp, error) {
 	out := new(ForceLogoutResp)
-	err := c.cc.Invoke(ctx, "/pbAuth.Auth/ForceLogout", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.auth.service.v1.Auth/ForceLogout", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func _Auth_UserRegister_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pbAuth.Auth/UserRegister",
+		FullMethod: "/api.auth.service.v1.Auth/UserRegister",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServer).UserRegister(ctx, req.(*UserRegisterReq))
@@ -126,7 +126,7 @@ func _Auth_UserToken_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pbAuth.Auth/UserToken",
+		FullMethod: "/api.auth.service.v1.Auth/UserToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServer).UserToken(ctx, req.(*UserTokenReq))
@@ -144,7 +144,7 @@ func _Auth_ForceLogout_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pbAuth.Auth/ForceLogout",
+		FullMethod: "/api.auth.service.v1.Auth/ForceLogout",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServer).ForceLogout(ctx, req.(*ForceLogoutReq))
@@ -156,7 +156,7 @@ func _Auth_ForceLogout_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Auth_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pbAuth.Auth",
+	ServiceName: "api.auth.service.v1.Auth",
 	HandlerType: (*AuthServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -173,5 +173,5 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "auth/service/v1/auth.proto",
+	Metadata: "v1/auth_service.proto",
 }

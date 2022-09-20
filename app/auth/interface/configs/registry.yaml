@@ -1,3 +1,2 @@
 etcd:
-  etchSchema: jannaim
-  etcdAddr: [ 127.0.0.1:2379 ]
+  end_point: 127.0.0.1:2379

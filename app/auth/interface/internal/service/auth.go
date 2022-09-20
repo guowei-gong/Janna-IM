@@ -7,11 +7,26 @@ import (
 )
 
 func (s *AuthService) UserRegister(ctx context.Context, req *v1.RegisterRequest) (*v1.UserReply, error) {
-	s.ac.Register(ctx, &biz.UserRegister{
-		ApiUserInfo: biz.ApiUserInfo{},
-		Secret:      ctx.Value("secret").(string),
-		Platform:    ctx.Value("platform").(int32),
-		OperationID: ctx.Value("operation_id").(string),
-	})
+	userInfoReq := req.UserInfo
+	userInfo := biz.ApiUserInfo{
+		UserID:      userInfoReq.UserId,
+		Nickname:    userInfoReq.NickName,
+		Gender:      userInfoReq.Gender,
+		PhoneNumber: userInfoReq.PhoneNumber,
+		Birth:       userInfoReq.Birth,
+		Email:       userInfoReq.Email,
+		CreateIp:    userInfoReq.CreateIp,
+		CreateTime:  userInfoReq.CreateTime,
+		LastLoginIp: userInfoReq.LastLoginIp,
+	}
+
+	if err := s.ac.Register(ctx, &biz.UserRegister{
+		ApiUserInfo: userInfo,
+		Secret:      req.UserRegister.Secret,
+		Platform:    req.UserRegister.Platform,
+		OperationID: req.UserRegister.OperationId,
+	}); err != nil {
+		return nil, err
+	}
 	return &v1.UserReply{}, nil
 }
