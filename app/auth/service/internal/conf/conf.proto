@@ -42,8 +42,7 @@ message Data {
 
 message Registry {
   message Etcd {
-    string address = 1;
-    string scheme = 2;
+    string end_point = 1;
   }
   Etcd etcd = 1;
 }

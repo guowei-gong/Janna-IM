@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	pb "Janna-IM/api/auth/service/v1"
 )
@@ -15,6 +16,7 @@ func NewAuthService() *AuthService {
 }
 
 func (s *AuthService) UserRegister(ctx context.Context, req *pb.UserRegisterReq) (*pb.UserRegisterResp, error) {
+	fmt.Println("Hello, world!")
 	return &pb.UserRegisterResp{}, nil
 }
 func (s *AuthService) UserToken(ctx context.Context, req *pb.UserTokenReq) (*pb.UserTokenResp, error) {

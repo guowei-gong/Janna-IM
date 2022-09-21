@@ -39,12 +39,12 @@ type AuthRepo interface {
 }
 
 type AuthUseCase struct {
-	Auth *conf.Auth
-	repo AuthRepo
+	Auth     *conf.Auth
+	authRepo AuthRepo
 }
 
-func NewAuthUseCase(auth *conf.Auth) *AuthUseCase {
-	return &AuthUseCase{Auth: auth}
+func NewAuthUseCase(auth *conf.Auth, authRepo AuthRepo) *AuthUseCase {
+	return &AuthUseCase{Auth: auth, authRepo: authRepo}
 }
 
 func (s *AuthUseCase) Register(ctx context.Context, params *UserRegister) error {
@@ -72,7 +72,9 @@ func (s *AuthUseCase) Register(ctx context.Context, params *UserRegister) error 
 	}
 
 	// TODO 远程调用
-	s.repo.RegisterUser(ctx, req)
-
+	err := s.authRepo.RegisterUser(ctx, req)
+	if err != nil {
+		return err
+	}
 	return nil
 }

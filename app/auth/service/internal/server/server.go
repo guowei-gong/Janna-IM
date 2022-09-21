@@ -13,7 +13,7 @@ var ProviderSet = wire.NewSet(NewGRPCServer, NewRegister)
 
 func NewRegister(conf *conf.Registry) registry.Registrar {
 	client, err := etcdclient.New(etcdclient.Config{
-		Endpoints: []string{conf.Etcd.Address},
+		Endpoints: []string{conf.Etcd.EndPoint},
 	})
 	if err != nil {
 		panic(err)

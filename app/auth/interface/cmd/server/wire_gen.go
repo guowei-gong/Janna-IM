@@ -20,7 +20,14 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, registry *conf.Registry, confData *conf.Data, auth *conf.Auth, logger log.Logger) (*kratos.App, func(), error) {
-	authUseCase := biz.NewAuthUseCase(auth)
+	discovery := data.NewDiscovery(registry)
+	authClient := data.NewAuthServiceClient(discovery)
+	dataData, err := data.NewData(logger, authClient)
+	if err != nil {
+		return nil, nil, err
+	}
+	authRepo := data.NewAuthRepo(dataData, logger)
+	authUseCase := biz.NewAuthUseCase(auth, authRepo)
 	authService := service.NewAuthService(authUseCase, logger)
 	grpcServer := server.NewGRPCServer(confServer, authService, logger)
 	httpServer := server.NewHTTPServer(confServer, authService, logger)
