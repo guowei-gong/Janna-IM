@@ -2,22 +2,41 @@ package data
 
 import (
 	"Janna-IM/app/auth/service/internal/conf"
+	"Janna-IM/app/auth/service/internal/data/ent"
+	"context"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-// ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewData, NewEntClient, NewAuthRepo)
 
-// Data .
 type Data struct {
-	// TODO wrapped database client
+	db *ent.Client
 }
 
-// NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
-	cleanup := func() {
-		log.NewHelper(logger).Info("closing the data resources")
+func NewEntClient(conf *conf.Data, logger log.Logger) *ent.Client {
+	log := log.NewHelper(log.With(logger, "module", "auth-server/data/ent"))
+
+	client, err := ent.Open(conf.Database.Driver, conf.Database.Source)
+	if err != nil {
+		log.Fatalf("failed opening connection to db: %v", err)
 	}
-	return &Data{}, cleanup, nil
+	if err := client.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+	return client
+}
+
+func NewData(entClient *ent.Client, logger log.Logger) (*Data, func(), error) {
+	log := log.NewHelper(log.With(logger, "module", "auth-service/data"))
+
+	d := &Data{db: entClient}
+
+	return d, func() {
+		if err := d.db.Close(); err != nil {
+			log.Error(err)
+		}
+	}, nil
 }
