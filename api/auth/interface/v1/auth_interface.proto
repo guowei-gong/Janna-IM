@@ -12,6 +12,31 @@ service Auth {
       body: "*",
     };
   }
+
+  rpc UserToken (UserTokenReq) returns (UserTokenResp) {
+    option (google.api.http) = {
+      post: "/auth/user_token",
+      body: "*",
+    };
+  }
+}
+
+message CommonResp{
+  int32   errCode = 1;
+  string  errMsg = 2;
+}
+
+message UserTokenReq {
+  string secret = 1;
+  int32 platform = 2;
+  string user_id = 3;
+  string login_id = 4;
+  string operation_id = 5;
+}
+
+message UserTokenResp {
+  CommonResp common_resp = 1;
+  UserTokenInfo user_token_info = 2;
 }
 
 message UserTokenInfo {

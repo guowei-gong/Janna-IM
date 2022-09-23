@@ -5,15 +5,36 @@ import (
 	"Janna-IM/app/auth/service/internal/data/ent"
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var ProviderSet = wire.NewSet(NewData, NewEntClient, NewAuthRepo)
+var ProviderSet = wire.NewSet(NewData, NewRedisCmd, NewEntClient, NewAuthRepo)
 
 type Data struct {
-	db *ent.Client
+	db       *ent.Client
+	redisCli redis.Cmdable
+}
+
+func NewRedisCmd(conf *conf.Data, logger log.Logger) redis.Cmdable {
+	log := log.NewHelper(log.With(logger, "module", "auth-service/data/redis"))
+	client := redis.NewClient(&redis.Options{
+		Addr:         conf.Redis.Addr,
+		ReadTimeout:  conf.Redis.ReadTimeout.AsDuration(),
+		WriteTimeout: conf.Redis.WriteTimeout.AsDuration(),
+		DialTimeout:  time.Second * 2,
+		PoolSize:     10,
+	})
+	timeout, cancelFunc := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancelFunc()
+	err := client.Ping(timeout).Err()
+	if err != nil {
+		log.Fatalf("redis connect error: %v", err)
+	}
+	return client
 }
 
 func NewEntClient(conf *conf.Data, logger log.Logger) *ent.Client {

@@ -30,3 +30,19 @@ func (s *AuthService) UserRegister(ctx context.Context, req *v1.RegisterRequest)
 	}
 	return &v1.UserReply{}, nil
 }
+
+func (s *AuthService) UserToken(ctx context.Context, req *v1.UserTokenReq) (*v1.UserTokenResp, error) {
+	params := biz.UserTokenReq{
+		Secret:      req.Secret,
+		Platform:    req.Platform,
+		UserID:      req.UserId,
+		LoginIp:     req.LoginId,
+		OperationID: req.OperationId,
+	}
+
+	_, err := s.ac.Token(ctx, &params)
+	if err != nil {
+		return nil, err
+	}
+	return &v1.UserTokenResp{}, nil
+}

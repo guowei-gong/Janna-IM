@@ -21,7 +21,15 @@ func NewAuthRepo(data *Data, logger log.Logger) biz.AuthRepo {
 	}
 }
 
-func (ap *authRepo) RegisterUser(ctx context.Context, u *pbAuth.UserRegisterReq) error {
+func (ap *authRepo) UserToken(ctx context.Context, u *pbAuth.UserTokenReq) (*pbAuth.UserTokenResp, error) {
+	_, err := ap.data.ac.UserToken(ctx, u)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (ap *authRepo) UserRegister(ctx context.Context, u *pbAuth.UserRegisterReq) error {
 	_, err := ap.data.ac.UserRegister(ctx, u)
 	if err != nil {
 		return err

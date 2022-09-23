@@ -2,6 +2,7 @@ package data
 
 import (
 	"Janna-IM/app/auth/service/internal/biz"
+	"Janna-IM/app/auth/service/internal/data/ent/user"
 	"Janna-IM/pkg/constant"
 	"Janna-IM/pkg/utils"
 	"context"
@@ -21,6 +22,15 @@ func NewAuthRepo(data *Data, logger log.Logger) biz.AuthRepo {
 		data: data,
 		log:  log.NewHelper(log.With(logger, "module", "data/server-service")),
 	}
+}
+
+func (a *authRepo) UserExisted(ctx context.Context, id string) (bool, error) {
+	return a.data.db.User.Query().Where(user.UserID(id)).Exist(ctx)
+}
+
+func (a *authRepo) GetUserByUserId(ctx context.Context, id string) (*biz.User, error) {
+	a.data.db.User.Query().Where(user.UserID(id)).Exist(ctx)
+	return nil, nil
 }
 
 func (a *authRepo) CreateUser(ctx context.Context, u *biz.User) error {

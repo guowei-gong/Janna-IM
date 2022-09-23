@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"time"
 )
@@ -27,8 +28,21 @@ type User struct {
 	LastLoginTime    time.Time
 }
 
+type UserToken struct {
+	Platform    int32
+	FromUserID  string
+	OpUserID    string
+	OperationID string
+	LoginIp     string
+}
+
 type AuthRepo interface {
 	CreateUser(ctx context.Context, u *User) error
+	GetUserByUserId(ctx context.Context, id string) (*User, error)
+	UserExisted(ctx context.Context, id string) (bool, error)
+}
+
+type TokenRepo interface {
 }
 
 type AuthUseCase struct {
@@ -42,7 +56,21 @@ func NewAuthUseCase(repo AuthRepo, logger log.Logger) *AuthUseCase {
 
 func (ac *AuthUseCase) Create(ctx context.Context, u *User) error {
 	//TODO 是否限制 IP
-
 	err := ac.repo.CreateUser(ctx, u)
 	return err
+}
+
+func (ac *AuthUseCase) UserToken(ctx context.Context, u *UserToken) (string, int64, error) {
+	existed, err := ac.repo.UserExisted(ctx, u.FromUserID)
+	if err != nil {
+		errMsg := u.OperationID + " ac.rep.UserExisted failed " + err.Error() + u.FromUserID
+		log.Error(u.OperationID, errMsg)
+		return "", 0, errors.InternalServer("auth", "internal error")
+	}
+
+	if !existed {
+		return "", 0, errors.NotFound("auth", "not found user by from_user_id")
+	}
+
+	return "", 0, err
 }

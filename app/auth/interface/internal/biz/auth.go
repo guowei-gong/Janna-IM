@@ -26,6 +26,14 @@ type ApiUserInfo struct {
 	InvitationCode string `json:"invitationCode"`
 }
 
+type UserTokenReq struct {
+	Secret      string
+	Platform    int32
+	UserID      string
+	LoginIp     string
+	OperationID string
+}
+
 type UserRegister struct {
 	ApiUserInfo
 
@@ -35,7 +43,8 @@ type UserRegister struct {
 }
 
 type AuthRepo interface {
-	RegisterUser(ctx context.Context, u *pbAuth.UserRegisterReq) error
+	UserRegister(ctx context.Context, u *pbAuth.UserRegisterReq) error
+	UserToken(ctx context.Context, u *pbAuth.UserTokenReq) (*pbAuth.UserTokenResp, error)
 }
 
 type AuthUseCase struct {
@@ -47,13 +56,32 @@ func NewAuthUseCase(auth *conf.Auth, authRepo AuthRepo) *AuthUseCase {
 	return &AuthUseCase{Auth: auth, authRepo: authRepo}
 }
 
+func (s *AuthUseCase) Token(ctx context.Context, params *UserTokenReq) (*pbAuth.UserTokenResp, error) {
+	// 前置校验
+	if params.Secret != s.Auth.Secret {
+		return nil, errors.Unauthorized("auth", "secret error")
+	}
+
+	req := &pbAuth.UserTokenReq{
+		Platform:    params.Platform,
+		FromUserID:  params.UserID,
+		OperationID: params.OperationID,
+		LoginIp:     params.LoginIp,
+	}
+
+	_, err := s.authRepo.UserToken(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
 func (s *AuthUseCase) Register(ctx context.Context, params *UserRegister) error {
-	// TODO 前置校验
+	// 前置校验
 	if params.Secret != s.Auth.Secret {
 		return errors.Unauthorized("auth", "secret error")
 	}
 
-	// TODO 请求参数
 	req := &pbAuth.UserRegisterReq{
 		UserInfo: &ws.UserInfo{
 			UserID:        params.UserID,
@@ -71,8 +99,8 @@ func (s *AuthUseCase) Register(ctx context.Context, params *UserRegister) error 
 		OperationID: params.OperationID,
 	}
 
-	// TODO 远程调用
-	err := s.authRepo.RegisterUser(ctx, req)
+	// 远程调用
+	err := s.authRepo.UserRegister(ctx, req)
 	if err != nil {
 		return err
 	}

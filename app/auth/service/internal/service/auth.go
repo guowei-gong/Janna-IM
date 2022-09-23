@@ -23,6 +23,14 @@ func (s *AuthService) UserRegister(ctx context.Context, req *pb.UserRegisterReq)
 }
 
 func (s *AuthService) UserToken(ctx context.Context, req *pb.UserTokenReq) (*pb.UserTokenResp, error) {
+	s.log.Info(req.OperationID, "rpc args", req.String())
+	s.ac.UserToken(ctx, &biz.UserToken{
+		Platform:    req.Platform,
+		FromUserID:  req.FromUserID,
+		OperationID: req.OperationID,
+		LoginIp:     req.LoginIp,
+	})
+
 	return &pb.UserTokenResp{}, nil
 }
 func (s *AuthService) ForceLogout(ctx context.Context, req *pb.ForceLogoutReq) (*pb.ForceLogoutResp, error) {
